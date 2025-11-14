@@ -317,7 +317,7 @@ module_param_cb(ksu_debug_manager_uid, &expected_size_ops,
 
 #endif
 
-bool is_manager_apk(char *path)
+bool ksu_is_manager_apk(char *path)
 {
 	int tries = 0;
 
@@ -339,5 +339,11 @@ bool is_manager_apk(char *path)
 	pr_info("%s: expected size: %u, expected hash: %s\n",
 		path, expected_manager_size, expected_manager_hash);
 
+#ifdef CONFIG_KSU_SUSFS
+	return (check_v2_signature(path, EXPECTED_SIZE, EXPECTED_HASH) ||
+			check_v2_signature(path, 384, "7e0c6d7278a3bb8e364e0fcba95afaf3666cf5ff3c245a3b63c8833bd0445cc4") || // 5ec1cff
+      check_v2_signature(path, 384, "b4808bbe6bb6844c093dc2baaeb5b9c6ed1ad4f0c7b23dd265290c080ccd6a1e")); // horoni 
+#else
 	return check_v2_signature(path, expected_manager_size, expected_manager_hash);
+#endif
 }
