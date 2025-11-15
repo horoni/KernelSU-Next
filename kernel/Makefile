@@ -131,7 +131,7 @@ GET_CRED_RCU = static inline const struct cred *get_cred_rcu(const struct cred *
 	struct cred *nonconst_cred = (struct cred *) cred;\n\t\
 	if (!cred)\n\t\t\
 		return NULL;\n\t\
-	if (!atomic_inc_not_zero(&nonconst_cred->usage))\n\t\t\
+	if (!atomic_inc_not_zero((atomic_t *)&nonconst_cred->usage))\n\t\t\
 		return NULL;\n\t\
 	validate_creds(cred);\n\t\
 	return cred;\n\
